@@ -39,7 +39,8 @@ class MainViewModel(private val boardSize: Int) : ViewModel() {
 
     private fun onPiecePlaced(coordinates: Pair<Int, Int>) {
         val oldMoveState = internalGameState[coordinates.first][coordinates.second]
-        // Don't let someone replace a move
+        // Don't let someone replace a move or add another move after the game is over (either through
+        // a win condition or a tie)
         if (oldMoveState.ticTacToeMove.owner != TicTacToePiece.EMPTY || gameOver) {
             return
         }
