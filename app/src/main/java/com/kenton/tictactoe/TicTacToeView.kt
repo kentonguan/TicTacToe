@@ -23,6 +23,8 @@ class TicTacToeAdapter :
 
     override fun submitList(list: List<TicTacToeBoardItem>?) {
         super.submitList(list)
+        // automatically notify data set being changed when a new list is submitted so that callers
+        // don't forget to do that.
         notifyDataSetChanged()
     }
 }
@@ -34,18 +36,20 @@ class TicTacToeBoxViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private var binding: TicTacToeBoxBinding = TicTacToeBoxBinding.bind(view)
 
     fun bind(item: TicTacToeBoardItem) {
-        binding.ticTacToePiece.setImageResource(0)
         item.ticTacToeMove.owner.let {
             binding.ticTacToePiece.setImageResource(it.pieceDrawable)
         }
+
         itemView.setOnClickListener {
             item.clickListener.invoke(item.ticTacToeMove.coordinates)
         }
-        if (item.highlightBackground) {
-            binding.root.setBackgroundColor(Color.GREEN)
+
+        val backgroundColor = if (item.highlightBackground) {
+            Color.GREEN
         } else {
-            binding.root.setBackgroundColor(Color.TRANSPARENT)
+            Color.TRANSPARENT
         }
+        binding.root.setBackgroundColor(backgroundColor)
     }
 }
 
@@ -66,6 +70,9 @@ class TicTacToeMoveDiffCallback : DiffUtil.ItemCallback<TicTacToeBoardItem>() {
     }
 }
 
+// This GridLayoutManager assumes that the number of rows and columns are the same and resizes it's
+// children to fit evenly within the visible vertical space. Vertical and Horizontal scrolling are
+// disabled to prevent any weird interactions with swiping across the view.
 class TicTacToeGridLayoutManager(context: Context, boardSize: Int) :
     GridLayoutManager(context, boardSize, LinearLayoutManager.VERTICAL, false) {
 

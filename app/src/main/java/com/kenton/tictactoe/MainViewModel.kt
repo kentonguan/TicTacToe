@@ -26,13 +26,13 @@ class MainViewModel(private val boardSize: Int) : ViewModel() {
     private var gameOver: Boolean = false
 
     init {
-        internalGameState = clearBoard()
+        internalGameState = resetBoard()
         ticTacToeBoard.value = internalGameState.toList()
     }
 
     fun onNewGameClick() {
         currentPiece.value = TicTacToePiece.O
-        internalGameState = clearBoard()
+        internalGameState = resetBoard()
         ticTacToeBoard.value = internalGameState.toList()
         gameOver = false
     }
@@ -120,7 +120,7 @@ class MainViewModel(private val boardSize: Int) : ViewModel() {
         internalGameState[row][column] = originalState.copy(highlightBackground = true)
     }
 
-    private fun clearBoard(): TicTacToeBoardState {
+    private fun resetBoard(): TicTacToeBoardState {
         return TicTacToeBoardState(boardSize) {
             generateDefaultBoardRow(it)
         }
