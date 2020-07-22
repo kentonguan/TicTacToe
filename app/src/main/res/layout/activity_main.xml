@@ -29,19 +29,6 @@
         app:layout_constraintTop_toTopOf="@id/current_player_header"
         tools:src="@drawable/ic_o_piece" />
 
-<!--    <com.kenton.tictactoe.TicTacToeBoard-->
-<!--        android:id="@+id/tic_tac_toe_board"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_marginStart="24dp"-->
-<!--        android:layout_marginEnd="24dp"-->
-<!--        android:background="@drawable/tic_tac_toe_box_background"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/new_game_button"-->
-<!--        app:layout_constraintDimensionRatio="W,1:1"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/current_player_header" />-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tic_tac_toe_board"
         android:layout_width="match_parent"
@@ -53,67 +40,8 @@
         app:layout_constraintDimensionRatio="W,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/current_player_header" />
-
-    <View
-        android:id="@+id/horizontal_divider_1"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="#888"
-        app:layout_constraintBottom_toTopOf="@id/horizontal_divider_2"
-        app:layout_constraintEnd_toEndOf="@id/tic_tac_toe_board"
-        app:layout_constraintStart_toStartOf="@id/tic_tac_toe_board"
-        app:layout_constraintTop_toTopOf="@id/tic_tac_toe_board" />
-
-    <View
-        android:id="@+id/horizontal_divider_2"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="#888"
-        app:layout_constraintBottom_toTopOf="@id/horizontal_divider_3"
-        app:layout_constraintEnd_toEndOf="@id/tic_tac_toe_board"
-        app:layout_constraintStart_toStartOf="@id/tic_tac_toe_board"
-        app:layout_constraintTop_toBottomOf="@id/horizontal_divider_1" />
-
-    <View
-        android:id="@+id/horizontal_divider_3"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="#888"
-        app:layout_constraintBottom_toBottomOf="@id/tic_tac_toe_board"
-        app:layout_constraintEnd_toEndOf="@id/tic_tac_toe_board"
-        app:layout_constraintStart_toStartOf="@id/tic_tac_toe_board"
-        app:layout_constraintTop_toBottomOf="@id/horizontal_divider_2" />
-
-    <View
-        android:id="@+id/vertical_divider_1"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:background="#888"
-        app:layout_constraintBottom_toBottomOf="@id/tic_tac_toe_board"
-        app:layout_constraintEnd_toStartOf="@id/vertical_divider_2"
-        app:layout_constraintStart_toStartOf="@id/tic_tac_toe_board"
-        app:layout_constraintTop_toTopOf="@id/tic_tac_toe_board" />
-
-    <View
-        android:id="@+id/vertical_divider_2"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:background="#888"
-        app:layout_constraintBottom_toBottomOf="@id/tic_tac_toe_board"
-        app:layout_constraintEnd_toStartOf="@id/vertical_divider_3"
-        app:layout_constraintStart_toEndOf="@id/vertical_divider_1"
-        app:layout_constraintTop_toTopOf="@id/tic_tac_toe_board" />
-
-    <View
-        android:id="@+id/vertical_divider_3"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:background="#888"
-        app:layout_constraintBottom_toBottomOf="@id/tic_tac_toe_board"
-        app:layout_constraintEnd_toEndOf="@id/tic_tac_toe_board"
-        app:layout_constraintStart_toEndOf="@id/vertical_divider_2"
-        app:layout_constraintTop_toTopOf="@id/tic_tac_toe_board" />
+        app:layout_constraintTop_toBottomOf="@id/current_player_header"
+        />
 
     <TextView
         android:id="@+id/new_game_button"

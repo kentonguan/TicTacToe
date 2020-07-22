@@ -2,7 +2,7 @@ package com.kenton.tictactoe
 
 import androidx.annotation.DrawableRes
 
-data class TicTacToeMove(val coordinates: Pair<Int, Int>, val owner: TicTacToePiece?) {
+data class TicTacToeMove(val coordinates: Pair<Int, Int>, val owner: TicTacToePiece? = null) {
 
 
 }
