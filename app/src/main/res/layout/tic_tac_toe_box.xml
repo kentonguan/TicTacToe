@@ -2,13 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/tic_tac_toe_box_background">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/tic_tac_toe_piece"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/tic_tac_toe_box_background"
         tools:src="@drawable/ic_o_piece" />
 
 </FrameLayout>

@@ -1,6 +1,7 @@
 package com.kenton.tictactoe
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,8 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.*
 import com.kenton.tictactoe.databinding.TicTacToeBoxBinding
 
-class TicTacToeAdapter : ListAdapter<TicTacToeBoardItem, TicTacToeBoxViewHolder>(TicTacToeMoveDiffCallback()) {
+class TicTacToeAdapter :
+    ListAdapter<TicTacToeBoardItem, TicTacToeBoxViewHolder>(TicTacToeMoveDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TicTacToeBoxViewHolder {
         return TicTacToeBoxViewHolder(parent, R.layout.tic_tac_toe_box)
@@ -19,7 +21,7 @@ class TicTacToeAdapter : ListAdapter<TicTacToeBoardItem, TicTacToeBoxViewHolder>
         holder.bind(getItem(position))
     }
 
-    override fun submitList(list: MutableList<TicTacToeBoardItem>?) {
+    override fun submitList(list: List<TicTacToeBoardItem>?) {
         super.submitList(list)
         notifyDataSetChanged()
     }
@@ -31,29 +33,41 @@ class TicTacToeBoxViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private var binding: TicTacToeBoxBinding = TicTacToeBoxBinding.bind(view)
 
-    fun bind(move: TicTacToeBoardItem) {
+    fun bind(item: TicTacToeBoardItem) {
         binding.ticTacToePiece.setImageResource(0)
-        move.ticTacToeMove.owner?.let {
+        item.ticTacToeMove.owner.let {
             binding.ticTacToePiece.setImageResource(it.pieceDrawable)
         }
         itemView.setOnClickListener {
-            move.clickListener.invoke(move.itemId)
+            item.clickListener.invoke(item.ticTacToeMove.coordinates)
+        }
+        if (item.highlightBackground) {
+            binding.root.setBackgroundColor(Color.GREEN)
+        } else {
+            binding.root.setBackgroundColor(Color.TRANSPARENT)
         }
     }
 }
 
 class TicTacToeMoveDiffCallback : DiffUtil.ItemCallback<TicTacToeBoardItem>() {
 
-    override fun areItemsTheSame(oldItem: TicTacToeBoardItem, newItem: TicTacToeBoardItem): Boolean {
-        return oldItem.itemId == newItem.itemId
+    override fun areItemsTheSame(
+        oldItem: TicTacToeBoardItem,
+        newItem: TicTacToeBoardItem
+    ): Boolean {
+        return oldItem.ticTacToeMove.coordinates == newItem.ticTacToeMove.coordinates
     }
 
-    override fun areContentsTheSame(oldItem: TicTacToeBoardItem, newItem: TicTacToeBoardItem): Boolean {
+    override fun areContentsTheSame(
+        oldItem: TicTacToeBoardItem,
+        newItem: TicTacToeBoardItem
+    ): Boolean {
         return oldItem == newItem
     }
 }
 
-class TicTacToeGridLayoutManager(context: Context, boardSize: Int) : GridLayoutManager(context, boardSize, LinearLayoutManager.VERTICAL, false) {
+class TicTacToeGridLayoutManager(context: Context, boardSize: Int) :
+    GridLayoutManager(context, boardSize, LinearLayoutManager.VERTICAL, false) {
 
     override fun canScrollHorizontally(): Boolean = false
 
@@ -85,4 +99,13 @@ class TicTacToeGridLayoutManager(context: Context, boardSize: Int) : GridLayoutM
     }
 }
 
-data class TicTacToeBoardItem(val itemId: Int, val ticTacToeMove: TicTacToeMove, val clickListener: (Int) -> Unit)
+data class TicTacToeBoardItem(
+    val ticTacToeMove: TicTacToeMove,
+    val clickListener: (Pair<Int, Int>) -> Unit,
+    val highlightBackground: Boolean = false
+) {
+
+    // helper variable
+    val ownerOrdinal
+        get() = ticTacToeMove.owner.ordinal
+}
