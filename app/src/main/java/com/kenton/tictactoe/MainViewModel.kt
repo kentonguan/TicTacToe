@@ -1,6 +1,5 @@
 package com.kenton.tictactoe
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -57,37 +56,62 @@ class MainViewModel(private val boardSize: Int) : ViewModel() {
     }
 
     private fun checkIfMoveCompletes() {
-        if (internalGameState.isVerticallyComplete(lastMove)) {
-            highlightVerticalRow(lastMove!!.coordinates)
-        }
-
-        if (internalGameState.isHorizontallyComplete(lastMove)) {
-            Log.e("YAY", "${currentPiece.value?.name} won horizontally!")
-        }
-
-        if (internalGameState.isLeftDiagonalComplete(lastMove)) {
-            Log.e("YAY", "${currentPiece.value?.name} won leftDiagonally!")
-        }
-
-        if (internalGameState.isRightDiagonalComplete(lastMove)) {
-            Log.e("YAY", "${currentPiece.value?.name} won rightDiagonally!")
-        }
-
-        if (internalGameState.isCornerComplete(lastMove)) {
-            Log.e("YAY", "${currentPiece.value?.name} won corners!")
-        }
-
-        if (internalGameState.isBoxComplete(lastMove)) {
-            Log.e("YAY", "${currentPiece.value?.name} made a box!")
+        // Since this.lastMove is mutable, Kotlin complains that it can change in between us checking
+        // for null and using it, so assigning it to a val will guarantee that it never changes.
+        val lastMove = this.lastMove
+        if (lastMove != null) {
+            when {
+                internalGameState.isVerticallyComplete(lastMove) -> highlightVerticalColumn()
+                internalGameState.isHorizontallyComplete(lastMove) -> highlightHorizontalRow()
+                internalGameState.isDownwardsDiagonalComplete(lastMove) -> highlightDownwardsDiagonal()
+                internalGameState.isUpwardsDiagonalComplete(lastMove) -> highlightUpwardsDiagonal()
+                internalGameState.isCornerComplete(lastMove) -> highlightCorners()
+                internalGameState.isBoxComplete(lastMove) -> highlightBox()
+            }
         }
     }
 
-    private fun highlightVerticalRow(coordinates: Pair<Int, Int>) {
+    private fun highlightVerticalColumn() {
+        val column = lastMove?.coordinates?.second ?: return
         for (row in 0 until boardSize) {
-            val originalState = internalGameState[row][coordinates.second]
-            val newState = originalState.copy(highlightBackground = true)
-            internalGameState[row][coordinates.second] = newState
+            highlightCell(row, column)
         }
+    }
+
+    private fun highlightHorizontalRow() {
+        val row = lastMove?.coordinates?.first ?: return
+        for (column in 0 until boardSize) {
+            highlightCell(row, column)
+        }
+    }
+
+    private fun highlightDownwardsDiagonal() {
+        for (coordinate in 0 until boardSize) {
+            highlightCell(coordinate, coordinate)
+        }
+    }
+
+    private fun highlightUpwardsDiagonal() {
+        for (coordinate in 0 until boardSize) {
+            highlightCell(coordinate, boardSize - coordinate - 1)
+        }
+    }
+
+    private fun highlightCorners() {
+        val lastIndex = boardSize - 1
+        highlightCell(0, 0)
+        highlightCell(0, lastIndex)
+        highlightCell(lastIndex, 0)
+        highlightCell(lastIndex, lastIndex)
+    }
+
+    private fun highlightBox() {
+
+    }
+
+    private fun highlightCell(row: Int, column: Int) {
+        val originalState = internalGameState[row][column]
+        internalGameState[row][column] = originalState.copy(highlightBackground = true)
     }
 
     private fun clearBoard(): TicTacToeBoardState {
