@@ -23,6 +23,7 @@ class MainViewModel(private val boardSize: Int) : ViewModel() {
 
     private var lastMove: TicTacToeMove? = null
     private var internalGameState: TicTacToeBoardState
+    private var gameOver: Boolean = false
 
     init {
         internalGameState = clearBoard()
@@ -33,12 +34,13 @@ class MainViewModel(private val boardSize: Int) : ViewModel() {
         currentPiece.value = TicTacToePiece.O
         internalGameState = clearBoard()
         ticTacToeBoard.value = internalGameState.toList()
+        gameOver = false
     }
 
     private fun onPiecePlaced(coordinates: Pair<Int, Int>) {
         val oldMoveState = internalGameState[coordinates.first][coordinates.second]
         // Don't let someone replace a move
-        if (oldMoveState.ticTacToeMove.owner != TicTacToePiece.EMPTY) {
+        if (oldMoveState.ticTacToeMove.owner != TicTacToePiece.EMPTY || gameOver) {
             return
         }
         // If the move is valid, update the move and store it as our last made move
@@ -60,6 +62,7 @@ class MainViewModel(private val boardSize: Int) : ViewModel() {
         // for null and using it, so assigning it to a val will guarantee that it never changes.
         val lastMove = this.lastMove
         if (lastMove != null) {
+            gameOver = true
             when {
                 internalGameState.isVerticallyComplete(lastMove) -> highlightVerticalColumn()
                 internalGameState.isHorizontallyComplete(lastMove) -> highlightHorizontalRow()
@@ -67,6 +70,7 @@ class MainViewModel(private val boardSize: Int) : ViewModel() {
                 internalGameState.isUpwardsDiagonalComplete(lastMove) -> highlightUpwardsDiagonal()
                 internalGameState.isCornerComplete(lastMove) -> highlightCorners()
                 internalGameState.isBoxComplete(lastMove) -> highlightBox()
+                else -> gameOver = false
             }
         }
     }
@@ -106,7 +110,9 @@ class MainViewModel(private val boardSize: Int) : ViewModel() {
     }
 
     private fun highlightBox() {
-
+        for ((row, column) in internalGameState.getBoxHighlightCoordinates(lastMove!!)) {
+            highlightCell(row, column)
+        }
     }
 
     private fun highlightCell(row: Int, column: Int) {

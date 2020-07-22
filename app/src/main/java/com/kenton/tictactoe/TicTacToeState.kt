@@ -52,7 +52,6 @@ fun TicTacToeBoardState.isUpwardsDiagonalComplete(lastMove: TicTacToeMove): Bool
 
 fun TicTacToeBoardState.isCornerComplete(lastMove: TicTacToeMove): Boolean {
     val lastMoveOwner = lastMove.owner
-    val lastIndex = size - 1
     return this[0][0].ownerOrdinal == lastMoveOwner.ordinal &&
             this[0][lastIndex].ownerOrdinal == lastMoveOwner.ordinal &&
             this[lastIndex][0].ownerOrdinal == lastMoveOwner.ordinal &&
@@ -61,40 +60,14 @@ fun TicTacToeBoardState.isCornerComplete(lastMove: TicTacToeMove): Boolean {
 
 fun TicTacToeBoardState.isBoxComplete(lastMove: TicTacToeMove): Boolean {
     val coordinates = lastMove.coordinates
-    val xCoordinate = coordinates.first
-    val yCoordinate = coordinates.second
+    val row = coordinates.first
+    val column = coordinates.second
     val ownerOrdinal = lastMove.owner.ordinal
-    val lastIndex = size - 1
 
-    // Check Move as top left quadrant of box. If it's on the bottom row or rightmost column return false
-    val boxCompleteTopLeft = isTopLeftComplete(xCoordinate, yCoordinate, ownerOrdinal)
-
-    // Check Move as top right quadrant of box. If it's on the bottom row or leftmost column return false
-    val boxCompleteTopRight = if (xCoordinate == lastIndex || yCoordinate == 0) {
-        false
-    } else {
-        this[xCoordinate][yCoordinate - 1].ownerOrdinal == ownerOrdinal &&
-                this[xCoordinate + 1][yCoordinate].ownerOrdinal == ownerOrdinal &&
-                this[xCoordinate + 1][yCoordinate - 1].ownerOrdinal == ownerOrdinal
-    }
-
-    // Check Move as bottom left quadrant of box. If it's on the top row or the rightmost column return false
-    val boxCompleteBottomLeft = if (xCoordinate == 0 || yCoordinate == lastIndex) {
-        false
-    } else {
-        this[xCoordinate][yCoordinate + 1].ownerOrdinal == ownerOrdinal &&
-                this[xCoordinate - 1][yCoordinate].ownerOrdinal == ownerOrdinal &&
-                this[xCoordinate - 1][yCoordinate + 1].ownerOrdinal == ownerOrdinal
-    }
-
-    // Check Move as bottom right quadrant of box. If it's on the top row or the leftmost column return false
-    val boxCompleteBottomRight = if (xCoordinate == 0 || yCoordinate == 0) {
-        false
-    } else {
-        this[xCoordinate][yCoordinate - 1].ownerOrdinal == ownerOrdinal &&
-                this[xCoordinate - 1][yCoordinate].ownerOrdinal == ownerOrdinal &&
-                this[xCoordinate - 1][yCoordinate - 1].ownerOrdinal == ownerOrdinal
-    }
+    val boxCompleteTopLeft = isTopLeftComplete(row, column, ownerOrdinal)
+    val boxCompleteTopRight = isTopRightComplete(row, column, ownerOrdinal)
+    val boxCompleteBottomLeft = isBottomLeftComplete(row, column, ownerOrdinal)
+    val boxCompleteBottomRight = isBottomRightComplete(row, column, ownerOrdinal)
 
     return boxCompleteBottomLeft || boxCompleteBottomRight || boxCompleteTopLeft || boxCompleteTopRight
 }
@@ -109,12 +82,103 @@ fun TicTacToeBoardState.toList(): List<TicTacToeBoardItem> {
     return items
 }
 
-private fun TicTacToeBoardState.isTopLeftComplete(xCoordinate: Int, yCoordinate: Int, ownerOrdinal: Int): Boolean {
-    return if (xCoordinate == lastIndex || yCoordinate == lastIndex) {
+fun TicTacToeBoardState.getBoxHighlightCoordinates(lastMove: TicTacToeMove): Array<Pair<Int, Int>> {
+    val row = lastMove.coordinates.first
+    val column = lastMove.coordinates.second
+    val ownerOrdinal = lastMove.owner.ordinal
+    return when {
+        isTopLeftComplete(row, column, ownerOrdinal) -> {
+            arrayOf(
+                Pair(row, column),
+                Pair(row, column + 1),
+                Pair(row + 1, column),
+                Pair(row + 1, column + 1)
+            )
+        }
+        isTopRightComplete(row, column, ownerOrdinal) -> {
+            arrayOf(
+                Pair(row, column),
+                Pair(row, column - 1),
+                Pair(row + 1, column),
+                Pair(row + 1, column - 1)
+            )
+        }
+        isBottomLeftComplete(row, column, ownerOrdinal) -> {
+            arrayOf(
+                Pair(row, column),
+                Pair(row, column + 1),
+                Pair(row - 1, column),
+                Pair(row - 1, column + 1)
+            )
+        }
+        isBottomRightComplete(row, column, ownerOrdinal) -> {
+            arrayOf(
+                Pair(row, column),
+                Pair(row, column - 1),
+                Pair(row - 1, column),
+                Pair(row - 1, column - 1)
+            )
+        }
+         else -> arrayOf()
+    }
+}
+
+// Check Move as top left quadrant of box. If it's on the bottom row or rightmost column return false
+private fun TicTacToeBoardState.isTopLeftComplete(
+    row: Int,
+    column: Int,
+    ownerOrdinal: Int
+): Boolean {
+    return if (row == lastIndex || column == lastIndex) {
         false
     } else {
-        this[xCoordinate][yCoordinate + 1].ownerOrdinal == ownerOrdinal &&
-                this[xCoordinate + 1][yCoordinate].ownerOrdinal == ownerOrdinal &&
-                this[xCoordinate + 1][yCoordinate + 1].ownerOrdinal == ownerOrdinal
+        this[row][column + 1].ownerOrdinal == ownerOrdinal &&
+                this[row + 1][column].ownerOrdinal == ownerOrdinal &&
+                this[row + 1][column + 1].ownerOrdinal == ownerOrdinal
+    }
+}
+
+// Check Move as top right quadrant of box. If it's on the bottom row or leftmost column return false
+private fun TicTacToeBoardState.isTopRightComplete(
+    row: Int,
+    column: Int,
+    ownerOrdinal: Int
+): Boolean {
+    return if (row == lastIndex || column == 0) {
+        false
+    } else {
+        this[row][column - 1].ownerOrdinal == ownerOrdinal &&
+                this[row + 1][column].ownerOrdinal == ownerOrdinal &&
+                this[row + 1][column - 1].ownerOrdinal == ownerOrdinal
+    }
+}
+
+// Check Move as bottom left quadrant of box. If it's on the top row or the rightmost column return false
+private fun TicTacToeBoardState.isBottomLeftComplete(
+    row: Int,
+    column: Int,
+    ownerOrdinal: Int
+): Boolean {
+    return if (row == 0 || column == lastIndex) {
+        false
+    } else {
+        this[row][column + 1].ownerOrdinal == ownerOrdinal &&
+                this[row - 1][column].ownerOrdinal == ownerOrdinal &&
+                this[row - 1][column + 1].ownerOrdinal == ownerOrdinal
+    }
+}
+
+// Check Move as bottom right quadrant of box. If it's on the top row or the leftmost column return false
+private fun TicTacToeBoardState.isBottomRightComplete(
+    row: Int,
+    column: Int,
+    ownerOrdinal: Int
+): Boolean {
+    return if (row == 0 || column == 0) {
+        false
+    } else {
+        this[row][column - 1].ownerOrdinal == ownerOrdinal &&
+                this[row - 1][column].ownerOrdinal == ownerOrdinal &&
+                this[row - 1][column - 1].ownerOrdinal == ownerOrdinal
     }
 }

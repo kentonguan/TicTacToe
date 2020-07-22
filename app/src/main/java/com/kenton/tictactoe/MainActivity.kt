@@ -11,7 +11,7 @@ import com.kenton.tictactoe.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(), LifecycleOwner {
 
     companion object {
-        const val TIC_TAC_TOE_BOARD_SIZE = 4
+        private const val TIC_TAC_TOE_BOARD_SIZE = 4
     }
 
     private lateinit var viewbinding: ActivityMainBinding
